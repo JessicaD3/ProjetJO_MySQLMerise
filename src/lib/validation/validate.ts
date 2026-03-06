@@ -1,7 +1,7 @@
 import { ZodSchema } from "zod";
 import { apiError } from "@/lib/http/errors";
 
-// Functions pour lire les données JSON d'une requête et valider le corps de la requête en utilisant un schema Zod
+// Fonction utilitaire pour lire et parser le corps d'une requête en JSON, renvoie null si le parsing échoue (ex: corps vide ou non-JSON)
 export async function readJson(req: Request) {
   try {
     return await req.json();
@@ -10,8 +10,12 @@ export async function readJson(req: Request) {
   }
 }
 
-// Function pour valider le corps de la requête en utilisant un schema Zod, et lancer une ApiError en cas d'erreur de validation
+// Fonction de validation d'un corps de requête JSON à l'aide d'un schéma Zod, renvoie une erreur 400 en cas de validation échouée
 export async function validateBody<T>(req: Request, schema: ZodSchema<T>) {
+  if (!schema) {
+    throw apiError("CONFIG_ERROR", 500, "Validation schema is undefined (check imports/exports)");
+  }
+
   const body = await readJson(req);
   const parsed = schema.safeParse(body);
   if (!parsed.success) {
