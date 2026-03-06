@@ -30,6 +30,7 @@ export const sportUpdateSchema = z.object({
   nom_sport: z.string().min(2).max(100),
 });
 
+// Sites
 export const siteCreateSchema = z.object({
   nom_site: z.string().min(2).max(100),
   capacite: z.number().int().min(1).max(100000),
@@ -38,4 +39,19 @@ export const siteCreateSchema = z.object({
 export const siteUpdateSchema = z.object({
   nom_site: z.string().min(2).max(100),
   capacite: z.number().int().min(1).max(100000),
+});
+
+// Athlètes
+export const athleteCreateSchema = z.object({
+  nom: z.string().min(1).max(100),
+  prenom: z.string().min(1).max(100),
+  sexe: z.enum(["M", "F"]),
+  id_pays: z.number().int().positive(),
+});
+
+export const athleteUpdateSchema = z.object({
+  nom: z.string().min(1).max(100),
+  prenom: z.string().min(1).max(100),
+  sexe: z.enum(["M", "F"]),
+  id_pays: z.number().int().positive(),
 });
