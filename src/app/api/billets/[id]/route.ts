@@ -16,9 +16,7 @@ async function parseId(ctx: Ctx) {
 
 export const GET = handler<Ctx>(async (_req, ctx) => {
   const user = await requireAuth();
-  // option : tu peux autoriser LECTEUR ici plus tard pour affichage public
-  requireRole(user, ["ADMIN", "AGENT_BILLETTERIE", "ORGANISATEUR"]);
+  requireRole(user, ["ADMIN", "AGENT_BILLETTERIE"]);
 
-  const id_epreuve = await parseId(ctx);
-  return jsonOk(await service.countForEpreuve(id_epreuve));
+  return jsonOk(await service.get(await parseId(ctx)));
 });

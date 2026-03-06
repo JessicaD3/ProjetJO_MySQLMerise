@@ -104,3 +104,13 @@ export const medalAttribuerSchema = z.object({
   id_athlete: z.number().int().positive(),
   type_medaille: z.enum(["OR", "ARGENT", "BRONZE"]),
 });
+
+ // Billets
+ export const billetCreateSchema = z.object({
+  id_epreuve: z.number().int().positive(),
+  nom: z.string().min(1).max(100),
+  prenom: z.string().min(1).max(100),
+  num_place: z.string().min(1).max(50),
+  prix_achat: z.number().min(0).max(100000),
+  date_achat: z.string().optional(), 
+});
