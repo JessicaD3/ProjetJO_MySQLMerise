@@ -55,3 +55,45 @@ export const athleteUpdateSchema = z.object({
   sexe: z.enum(["M", "F"]),
   id_pays: z.number().int().positive(),
 });
+
+// Epreuves
+export const epreuveCreateSchema = z.object({
+  nom_epreuve: z.string().min(2).max(150),
+  date_heure: z.string().min(5).max(40), 
+  id_sport: z.number().int().positive(),
+  id_site: z.number().int().positive(),
+});
+
+export const epreuveUpdateSchema = z.object({
+  nom_epreuve: z.string().min(2).max(150),
+  date_heure: z.string().min(5).max(40),
+  id_sport: z.number().int().positive(),
+  id_site: z.number().int().positive(),
+});
+
+// Participations
+export const participationCreateSchema = z.object({
+  id_athlete: z.number().int().positive(),
+  id_epreuve: z.number().int().positive(),
+  inscription: z.string().optional(), 
+});
+
+export const participationDeleteSchema = z.object({
+  id_athlete: z.number().int().positive(),
+  id_epreuve: z.number().int().positive(),
+});
+
+// Resultats
+export const resultatCreateSchema = z.object({
+  id_athlete: z.number().int().positive(),
+  id_epreuve: z.number().int().positive(),
+  temps: z.string().min(1).max(50),
+  classement: z.number().int().min(1).max(9999),
+});
+
+export const resultatUpdateSchema = z.object({
+  id_athlete: z.number().int().positive(),
+  id_epreuve: z.number().int().positive(),
+  temps: z.string().min(1).max(50),
+  classement: z.number().int().min(1).max(9999),
+});
