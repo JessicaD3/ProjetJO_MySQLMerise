@@ -29,3 +29,13 @@ export const sportCreateSchema = z.object({
 export const sportUpdateSchema = z.object({
   nom_sport: z.string().min(2).max(100),
 });
+
+export const siteCreateSchema = z.object({
+  nom_site: z.string().min(2).max(100),
+  capacite: z.number().int().min(1).max(100000),
+});
+
+export const siteUpdateSchema = z.object({
+  nom_site: z.string().min(2).max(100),
+  capacite: z.number().int().min(1).max(100000),
+});
