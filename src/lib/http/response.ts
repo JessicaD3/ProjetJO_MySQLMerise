@@ -8,3 +8,8 @@ export function jsonOk(data: unknown, init?: ResponseInit) {
 export function jsonError(status: number, error: string, details?: unknown) {
   return NextResponse.json({ error, details: details ?? null }, { status });
 }
+
+// Function pour créer une réponse JSON indiquant qu'une ressource a été créée avec succès, en utilisant le code de statut 201
+export function jsonCreated(data: unknown, init?: ResponseInit) {
+  return NextResponse.json({ data }, { status: 201, ...init });
+}
