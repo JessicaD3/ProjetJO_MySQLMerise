@@ -97,3 +97,10 @@ export const resultatUpdateSchema = z.object({
   temps: z.string().min(1).max(50),
   classement: z.number().int().min(1).max(9999),
 });
+
+// Medailles
+export const medalAttribuerSchema = z.object({
+  id_epreuve: z.number().int().positive(),
+  id_athlete: z.number().int().positive(),
+  type_medaille: z.enum(["OR", "ARGENT", "BRONZE"]),
+});
