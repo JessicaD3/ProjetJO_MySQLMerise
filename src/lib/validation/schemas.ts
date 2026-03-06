@@ -12,12 +12,20 @@ export const loginSchema = z.object({
   mot_de_passe: z.string().min(1).max(200),
 });
 
-//  Schemas de validation pour les données d'entrée des routes de gestion des pays
+// Pays
 export const paysCreateSchema = z.object({
   nom_pays: z.string().min(2).max(100),
 });
 
-// Schema de validation pour les données d'entrée de la route de mise à jour d'un pays
 export const paysUpdateSchema = z.object({
   nom_pays: z.string().min(2).max(100),
+});
+
+// Sports
+export const sportCreateSchema = z.object({
+  nom_sport: z.string().min(2).max(100),
+});
+
+export const sportUpdateSchema = z.object({
+  nom_sport: z.string().min(2).max(100),
 });
