@@ -1,4 +1,3 @@
-// src/app/(public)/billets/page.tsx
 import { getSessionUser } from "@/lib/auth/session";
 import { redirect } from "next/navigation";
 import pool from "@/lib/db/pool";
@@ -10,10 +9,33 @@ type Billet = {
   id_epreuve: number;
   nom: string;
   prenom: string;
-  date_achat: string;
+  date_achat: string | Date;
   num_place: string;
   prix_achat: number;
 };
+
+function formatDateFr(value: string | Date) {
+  const date = value instanceof Date ? value : new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return String(value);
+  }
+
+  return new Intl.DateTimeFormat("fr-FR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date);
+}
+
+function formatMoney(value: number) {
+  return new Intl.NumberFormat("fr-FR", {
+    style: "currency",
+    currency: "EUR",
+  }).format(value);
+}
 
 export default async function MesBilletsPage() {
   const user = await getSessionUser();
@@ -42,7 +64,10 @@ export default async function MesBilletsPage() {
       </div>
 
       <div className="medals-table">
-        <div className="medals-header" style={{ gridTemplateColumns: "100px 160px 1fr 160px 140px 140px" }}>
+        <div
+          className="medals-header"
+          style={{ gridTemplateColumns: "100px 180px 1fr 160px 140px 140px" }}
+        >
           <div>ID</div>
           <div>Date</div>
           <div>Bénéficiaire</div>
@@ -62,15 +87,19 @@ export default async function MesBilletsPage() {
             <div
               key={b.id_billet}
               className="medal-row"
-              style={{ gridTemplateColumns: "100px 160px 1fr 160px 140px 140px" }}
+              style={{ gridTemplateColumns: "100px 180px 1fr 160px 140px 140px" }}
             >
               <div>{b.id_billet}</div>
-              <div>{b.date_achat}</div>
-              <div>{b.nom} {b.prenom}</div>
-              <div>{b.num_place}</div>
-              <div className="gold">{b.prix_achat}€</div>
+              <div>{formatDateFr(b.date_achat)}</div>
               <div>
-                <a className="filter-btn" href={`/billets/${b.id_billet}`}>Voir</a>
+                {b.nom} {b.prenom}
+              </div>
+              <div>{b.num_place}</div>
+              <div className="gold">{formatMoney(Number(b.prix_achat))}</div>
+              <div>
+                <a className="filter-btn" href={`/billets/${b.id_billet}`}>
+                  Voir
+                </a>
               </div>
             </div>
           ))

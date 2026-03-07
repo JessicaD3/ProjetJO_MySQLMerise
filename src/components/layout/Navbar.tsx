@@ -35,19 +35,19 @@ export default function Navbar() {
           <Link className={isActive(pathname, "/epreuves") ? "active" : ""} href="/epreuves">
             Sports
           </Link>
-            <Link className={isActive(pathname, "/athletes") ? "active" : ""} href="/athletes">
+          <Link className={isActive(pathname, "/athletes") ? "active" : ""} href="/athletes">
             Athlètes
           </Link>
-                    <Link className={isActive(pathname, "/calendrier") ? "active" : ""} href="/calendrier">
+          <Link className={isActive(pathname, "/calendrier") ? "active" : ""} href="/calendrier">
             Calendrier
+          </Link>
+          <Link className={isActive(pathname, "/tickets") ? "active" : ""} href="/tickets">
+            Billets
           </Link>
           <Link className={isActive(pathname, "/classement/medailles") ? "active" : ""} href="/classement/medailles">
             Médailles
           </Link>
-
-          {/* Login (style bouton) */}
           <AuthNav />
-
         </div>
       </div>
     </nav>

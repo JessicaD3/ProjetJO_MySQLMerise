@@ -5,27 +5,48 @@ import { useEffect, useState } from "react";
 type Props = {
   idEpreuve: number;
   defaultPrice?: number;
+  eventName?: string;
+  sportName?: string;
+  venueName?: string;
+  remaining?: number;
+  soldOut?: boolean;
 };
 
-export default function BuyTicketForm({ idEpreuve, defaultPrice = 85 }: Props) {
-  const [me, setMe] = useState<{ login: string; nom_role: string } | null>(null);
+type Me = {
+  login: string;
+  nom_role: string;
+};
+
+export default function BuyTicketForm({
+  idEpreuve,
+  defaultPrice = 85,
+  eventName,
+  sportName,
+  venueName,
+  remaining = 0,
+  soldOut = false,
+}: Props) {
+  const [me, setMe] = useState<Me | null>(null);
   const [loadingMe, setLoadingMe] = useState(true);
 
   const [nom, setNom] = useState("");
   const [prenom, setPrenom] = useState("");
-  const [numPlace, setNumPlace] = useState("");
-  const [prix, setPrix] = useState<number>(defaultPrice);
+  const [quantite, setQuantite] = useState(1);
 
   const [submitting, setSubmitting] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
+
+  const prix = defaultPrice;
 
   useEffect(() => {
     (async () => {
       setLoadingMe(true);
       const res = await fetch("/api/auth/me", { cache: "no-store" });
       const json = await res.json().catch(() => null);
+
       if (res.ok) setMe(json?.data ?? null);
       else setMe(null);
+
       setLoadingMe(false);
     })();
   }, []);
@@ -38,41 +59,74 @@ export default function BuyTicketForm({ idEpreuve, defaultPrice = 85 }: Props) {
       window.location.href = "/login";
       return;
     }
+
     if (me.nom_role !== "LECTEUR") {
       setMsg("Seuls les comptes LECTEUR peuvent acheter des billets ici.");
       return;
     }
-    if (!nom.trim() || !prenom.trim() || !numPlace.trim()) {
-      setMsg("Nom, prénom et numéro de place sont obligatoires.");
+
+    if (!nom.trim() || !prenom.trim()) {
+      setMsg("Nom et prénom sont obligatoires.");
+      return;
+    }
+
+    if (!Number.isInteger(quantite) || quantite < 1) {
+      setMsg("La quantité doit être d’au moins 1 billet.");
+      return;
+    }
+
+    if (quantite > remaining) {
+      setMsg(`Impossible d’acheter ${quantite} billet(s). Il ne reste que ${remaining} place(s).`);
       return;
     }
 
     setSubmitting(true);
+
     try {
-      const res = await fetch("/api/achats/billets", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id_epreuve: idEpreuve,
-          nom: nom.trim(),
-          prenom: prenom.trim(),
-          num_place: numPlace.trim(),
-          prix_achat: Number(prix),
-        }),
-      });
+      const createdIds: number[] = [];
 
-      const json = await res.json().catch(() => null);
+      for (let i = 0; i < quantite; i += 1) {
+        const res = await fetch("/api/achats/billets", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id_epreuve: idEpreuve,
+            nom: nom.trim(),
+            prenom: prenom.trim(),
+            prix_achat: Number(prix),
+          }),
+        });
 
-      if (!res.ok) {
-        setMsg(String(json?.details ?? json?.error ?? "Achat impossible"));
-        return;
+        const json = await res.json().catch(() => null);
+
+        if (!res.ok) {
+          setMsg(
+            String(
+              json?.details ??
+                json?.error ??
+                "Achat impossible"
+            )
+          );
+          return;
+        }
+
+        const idBillet = Number(json?.data?.id_billet);
+        if (!Number.isNaN(idBillet)) {
+          createdIds.push(idBillet);
+        }
       }
 
-      const id_billet = json?.data?.id_billet;
-      setMsg("✅ Billet acheté ! Redirection vers la facture…");
-      setTimeout(() => {
-        window.location.href = `/billets/${id_billet}`;
-      }, 700);
+      if (createdIds.length === 1) {
+        setMsg("✅ Billet acheté ! Redirection vers votre billet…");
+        setTimeout(() => {
+          window.location.href = `/billets/${createdIds[0]}`;
+        }, 700);
+      } else {
+        setMsg(`✅ ${createdIds.length} billets achetés avec succès !`);
+        setTimeout(() => {
+          window.location.href = "/compte";
+        }, 900);
+      }
     } finally {
       setSubmitting(false);
     }
@@ -81,44 +135,128 @@ export default function BuyTicketForm({ idEpreuve, defaultPrice = 85 }: Props) {
   if (loadingMe) return null;
 
   return (
-    <div className="medals-table" style={{ padding: 20, marginTop: 30 }}>
-      <h3 style={{ marginTop: 0, color: "var(--text-dark)" }}>Acheter un billet</h3>
+    <div className="official-form-wrap">
+      <div className="official-form-head">
+        <p className="official-form-kicker">Réservation</p>
+        <h3 className="official-form-title">Acheter un billet officiel</h3>
+        <p className="official-form-subtitle">
+          {sportName ? `${sportName} · ` : ""}
+          {eventName ?? "Épreuve"}
+          {venueName ? ` · ${venueName}` : ""}
+        </p>
+      </div>
+
+      <div className="official-form-price-row">
+        <div>
+          <span className="official-form-price-label">Tarif officiel</span>
+          <strong className="official-form-price-value">{prix} €</strong>
+        </div>
+        <div className="official-form-availability">
+          {soldOut ? "Complet" : `${remaining} place(s) disponible(s)`}
+        </div>
+      </div>
 
       {!me ? (
-        <div>
-          <p style={{ color: "var(--text-soft)" }}>
-            Vous devez être connecté (LECTEUR) pour acheter un billet.
+        <div className="official-login-box">
+          <p>
+            Vous devez être connecté avec un compte pour acheter
+            un billet.
           </p>
-          <button className="btn-modal" onClick={() => (window.location.href = "/login")}>
-            Se connecter
+          <button
+            className="official-pay-button"
+            type="button"
+            onClick={() => (window.location.href = "/login")}
+          >
+            <span>Connexion requise</span>
+            <strong>Se connecter</strong>
           </button>
         </div>
+      ) : soldOut ? (
+        <div className="official-login-box">
+          <p>Cette épreuve n’a plus de places disponibles pour le moment.</p>
+        </div>
       ) : (
-        <form onSubmit={onSubmit} style={{ display: "grid", gap: 12 }}>
-          <div className="form-group" style={{ marginBottom: 0 }}>
-            <label>Nom bénéficiaire</label>
-            <input value={nom} onChange={(e) => setNom(e.target.value)} placeholder="Dupont" />
+        <form onSubmit={onSubmit} className="official-ticket-form">
+          <div className="official-beneficiary-title">
+            <i>•</i>
+            <span>Bénéficiaire du lot de billets</span>
           </div>
 
-          <div className="form-group" style={{ marginBottom: 0 }}>
-            <label>Prénom bénéficiaire</label>
-            <input value={prenom} onChange={(e) => setPrenom(e.target.value)} placeholder="Alice" />
+          <div className="official-form-row">
+            <div className="official-input-group">
+              <label>Nom</label>
+              <input
+                value={nom}
+                onChange={(e) => setNom(e.target.value)}
+                placeholder="Dupont"
+              />
+            </div>
+
+            <div className="official-input-group">
+              <label>Prénom</label>
+              <input
+                value={prenom}
+                onChange={(e) => setPrenom(e.target.value)}
+                placeholder="Paul"
+              />
+            </div>
           </div>
 
-          <div className="form-group" style={{ marginBottom: 0 }}>
-            <label>Numéro de place</label>
-            <input value={numPlace} onChange={(e) => setNumPlace(e.target.value)} placeholder="A-01" />
+          <div className="official-form-row official-form-row-single">
+            <div className="official-input-group">
+              <label>Quantité</label>
+              <input
+                type="number"
+                min={1}
+                max={Math.max(1, remaining)}
+                value={quantite}
+                onChange={(e) => setQuantite(Number(e.target.value))}
+              />
+            </div>
           </div>
 
-          <div className="form-group" style={{ marginBottom: 0 }}>
-            <label>Prix (€)</label>
-            <input type="number" min={0} value={prix} onChange={(e) => setPrix(Number(e.target.value))} />
+          <div className="official-fixed-price-box">
+            <span className="official-fixed-price-label">Tarif officiel</span>
+            <strong className="official-fixed-price-value">{prix} € / billet</strong>
           </div>
 
-          {msg ? <p style={{ color: msg.startsWith("✅") ? "green" : "crimson", margin: 0 }}>{msg}</p> : null}
+          <div className="official-fixed-price-box">
+            <span className="official-fixed-price-label">Total estimé</span>
+            <strong className="official-fixed-price-value">
+              {(prix * quantite).toFixed(2)} €
+            </strong>
+          </div>
 
-          <button className="btn-modal" type="submit" disabled={submitting}>
-            {submitting ? "Achat..." : "Acheter"}
+          <div className="official-notice-text">
+            <span>✓</span>
+            <p>
+              Le prix et la place sont attribués automatiquement après validation du paiement.
+            </p>
+          </div>
+
+          <div className="official-notice-text">
+            <span>✓</span>
+            <p>
+              Tous les billets seront enregistrés sous le même nom et prénom,
+              puis rattachés à votre compte utilisateur.
+            </p>
+          </div>
+
+          {msg ? (
+            <p className={msg.startsWith("✅") ? "official-msg success" : "official-msg error"}>
+              {msg}
+            </p>
+          ) : null}
+
+          <button className="official-pay-button" type="submit" disabled={submitting}>
+            <span>Paiement sécurisé</span>
+            <strong>
+              {submitting
+                ? "Achat en cours..."
+                : quantite > 1
+                ? `Confirmer l’achat de ${quantite} billets`
+                : "Confirmer l’achat"}
+            </strong>
           </button>
         </form>
       )}

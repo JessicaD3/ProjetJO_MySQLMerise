@@ -13,7 +13,8 @@ type EpreuveRow = {
 };
 
 async function getEpreuves(): Promise<EpreuveRow[]> {
-  const res = await fetch("http://localhost:3000/api/epreuves", { cache: "no-store" });
+  const base = process.env.APP_URL || "http://localhost:3000";
+  const res = await fetch(`${base}/api/epreuves`, { cache: "no-store" });
   if (!res.ok) return [];
   const json = await res.json().catch(() => null);
   return (json?.data ?? []) as EpreuveRow[];

@@ -54,9 +54,7 @@ export default function EpreuvesClient({
         <h2 className="section-title">
           TOUTES LES <span>ÉPREUVES</span>
         </h2>
-        <p className="section-subtitle">
-          Données chargées depuis la base (API /api/epreuves)
-        </p>
+        <p className="section-subtitle">Découvrez le programme complet des compétitions</p>
       </div>
 
       <div className="filters">

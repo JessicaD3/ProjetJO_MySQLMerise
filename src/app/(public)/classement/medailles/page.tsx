@@ -1,10 +1,11 @@
 export default async function MedaillesPage() {
-  const res = await fetch("http://localhost:3000/api/classement/medailles", {
+  const base = process.env.APP_URL || "http://localhost:3000";
+  const res = await fetch(`${base}/api/classement/medailles`, {
     cache: "no-store",
   });
 
-  const json = await res.json();
-  const rows = json.data as Array<{
+  const json = await res.json().catch(() => ({ data: [] }));
+  const rows = (json.data ?? []) as Array<{
     rang: number;
     nom_pays: string;
     or: number;

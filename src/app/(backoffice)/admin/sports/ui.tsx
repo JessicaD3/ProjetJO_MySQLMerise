@@ -71,7 +71,7 @@ export default function AdminSportsClient() {
         <h2 className="section-title">
           Gestion <span>Sports</span>
         </h2>
-        <p className="section-subtitle">CRUD backoffice (RBAC côté API)</p>
+        <p className="section-subtitle">Gestion des disciplines olympiques</p>
       </div>
 
       <div className="medals-table" style={{ padding: 20, marginBottom: 20 }}>

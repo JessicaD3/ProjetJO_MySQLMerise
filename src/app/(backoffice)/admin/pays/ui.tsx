@@ -70,7 +70,7 @@ export default function AdminPaysClient() {
         <h2 className="section-title">
           Gestion <span>Pays</span>
         </h2>
-        <p className="section-subtitle">CRUD backoffice (API sécurisée RBAC)</p>
+        <p className="section-subtitle">Référentiel officiel des nations participantes</p>
       </div>
 
       <div className="medals-table" style={{ padding: 20, marginBottom: 20 }}>

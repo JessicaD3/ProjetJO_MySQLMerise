@@ -31,7 +31,7 @@ export default function AthletesClient({ athletes }: { athletes: AthleteRow[] })
         <h2 className="section-title">
           LES <span>ATHLÈTES</span>
         </h2>
-        <p className="section-subtitle">Liste publique (DB)</p>
+        <p className="section-subtitle">Retrouvez les athlètes engagés aux Jeux</p>
       </div>
 
       <div className="filters">
@@ -71,7 +71,7 @@ export default function AthletesClient({ athletes }: { athletes: AthleteRow[] })
                   <span>👤 {a.sexe}</span>
                   <span>🆔 {a.id_athlete}</span>
                 </div>
-                <p className="athlete-bio">Athlète enregistré dans la base.</p>
+                <p className="athlete-bio">Profil officiel — {a.nom_pays}</p>
               </div>
             </div>
           ))

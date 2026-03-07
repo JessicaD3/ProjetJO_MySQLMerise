@@ -21,14 +21,14 @@ function formatDate(dt: string) {
 
 export default function TicketsClient({ stats }: { stats: TicketStat[] }) {
   return (
-    <div className="section" style={{ paddingTop: 140 }}>
+    <div className="section" style={{ paddingTop: 50 }}>
       <div className="tickets-section">
         <div className="section-header">
           <h2 className="section-title">
             BILLETS <span>OFFICIELS</span>
           </h2>
           <p className="section-subtitle">
-            Sélectionnez une épreuve, consultez les places restantes, puis achetez sur la page de l’épreuve.
+            Réservez vos places pour vivre les moments forts des Jeux.
           </p>
         </div>
 
@@ -47,25 +47,24 @@ export default function TicketsClient({ stats }: { stats: TicketStat[] }) {
                   📅 {formatDate(t.date_heure)}
                 </div>
 
-                <div style={{ marginBottom: 14 }}>
-                  <div className="progress-bar">
-                    <div
-                      className="progress-fill"
-                      style={{
-                        width: `${Math.min(100, Math.round((t.sold / Math.max(1, t.capacite)) * 100))}%`,
-                      }}
-                    />
+                    <div style={{ marginBottom: 14 }}>
+                    <div className="progress-bar">
+                      <div
+                        className="progress-fill"
+                        style={{
+                          width: `${Math.min(100, Math.round((t.sold / Math.max(1, t.capacite)) * 100))}%`,
+                        }}
+                      />
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "flex-end", color: "var(--text-soft)" }}>
+                      <span>
+                        Places disponibles : <strong style={{ color: "var(--gold)" }}>{t.remaining}</strong>
+                      </span>
+                    </div>
                   </div>
-                  <div style={{ display: "flex", justifyContent: "space-between", color: "var(--text-soft)" }}>
-                    <span>Vendus: {t.sold}</span>
-                    <span>
-                      Restants: <strong style={{ color: "var(--gold)" }}>{t.remaining}</strong>
-                    </span>
-                  </div>
-                </div>
 
                 <a className="btn-ticket" href={`/epreuves/${t.id_epreuve}`}>
-                  Voir l’épreuve / Acheter
+                  Acheter un billet
                 </a>
               </div>
             ))

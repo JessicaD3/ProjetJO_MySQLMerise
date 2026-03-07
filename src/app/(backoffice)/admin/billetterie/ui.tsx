@@ -168,7 +168,6 @@ export default function AdminBilletterieClient() {
         <p className="section-subtitle">Vente de billets + contrôle capacité (backend)</p>
       </div>
 
-      {/* Form vente */}
       <div className="medals-table" style={{ padding: 20, marginBottom: 20 }}>
         <form onSubmit={onCreate} style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 220px 160px", gap: 12 }}>
           <div className="form-group" style={{ marginBottom: 0 }}>
@@ -208,7 +207,6 @@ export default function AdminBilletterieClient() {
           </button>
         </form>
 
-        {/* Capacité */}
         {idEpreuve ? (
           <p style={{ marginTop: 10, color: "var(--text-soft)" }}>
             Capacité : <strong>{capacite ?? "..."}</strong> — Vendus : <strong>{sold ?? "..."}</strong> — Restants :{" "}
@@ -219,7 +217,6 @@ export default function AdminBilletterieClient() {
         {err ? <p style={{ color: "crimson", marginTop: 10 }}>{err}</p> : null}
       </div>
 
-      {/* Liste billets */}
       <div className="medals-table">
         <div className="medals-header" style={{ gridTemplateColumns: "90px 1fr 1fr 1fr 140px 140px 200px" }}>
           <div>ID</div>

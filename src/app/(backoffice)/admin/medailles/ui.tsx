@@ -138,7 +138,6 @@ export default function AdminMedaillesClient() {
         <p className="section-subtitle">Attribuer OR/ARGENT/BRONZE à partir des résultats</p>
       </div>
 
-      {/* Form attribution */}
       <div className="medals-table" style={{ padding: 20, marginBottom: 20 }}>
         <form onSubmit={onAttribuer} style={{ display: "grid", gridTemplateColumns: "1fr 1fr 220px 160px", gap: 12 }}>
           <div className="form-group" style={{ marginBottom: 0 }}>
@@ -180,7 +179,6 @@ export default function AdminMedaillesClient() {
         {err ? <p style={{ color: "crimson", marginTop: 10 }}>{err}</p> : null}
       </div>
 
-      {/* Liste des médailles */}
       <div className="medals-table">
         <div className="medals-header" style={{ gridTemplateColumns: "120px 1fr 140px 1fr 200px" }}>
           <div>ID Épreuve</div>

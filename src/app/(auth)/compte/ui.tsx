@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 type Stats = {
   ticketsCount: number;
@@ -9,8 +9,6 @@ type Stats = {
   recentInvoices: any[];
   upcomingTickets: any[];
 };
-
-type Me = { login: string; nom_role: string };
 
 export default function UserDashboardClient({ login, role }: { login: string; role: string }) {
   const [tab, setTab] = useState<"dashboard" | "billets" | "profil">("dashboard");
@@ -21,14 +19,14 @@ export default function UserDashboardClient({ login, role }: { login: string; ro
   async function loadStats() {
     const res = await fetch("/api/mon-espace/stats", { cache: "no-store" });
     const json = await res.json().catch(() => null);
-    if (!res.ok) throw new Error(json?.details ?? json?.error ?? "Erreur stats");
+    if (!res.ok) throw new Error(json?.details ?? json?.error ?? "Erreur");
     return json.data as Stats;
   }
 
   async function loadMyTickets() {
     const res = await fetch("/api/mes-billets", { cache: "no-store" });
     const json = await res.json().catch(() => null);
-    if (!res.ok) throw new Error(json?.details ?? json?.error ?? "Erreur billets");
+    if (!res.ok) throw new Error(json?.details ?? json?.error ?? "Erreur");
     return (json.data ?? []) as any[];
   }
 
@@ -39,7 +37,7 @@ export default function UserDashboardClient({ login, role }: { login: string; ro
         const s = await loadStats();
         setStats(s);
       } catch (e: any) {
-        setErr(e?.message ?? "Erreur chargement");
+        setErr(e?.message ?? "Erreur");
       }
     })();
   }, []);
@@ -51,7 +49,7 @@ export default function UserDashboardClient({ login, role }: { login: string; ro
       const t = await loadMyTickets();
       setMyTickets(t);
     } catch (e: any) {
-      setErr(e?.message ?? "Erreur chargement billets");
+      setErr(e?.message ?? "Erreur");
     }
   }
 
@@ -84,11 +82,6 @@ export default function UserDashboardClient({ login, role }: { login: string; ro
             </button>
           </li>
           <li>
-            <button className={tab === "billets" ? "active" : ""} onClick={openBillets}>
-              Mes billets / factures <span>›</span>
-            </button>
-          </li>
-          <li>
             <button className={tab === "profil" ? "active" : ""} onClick={() => setTab("profil")}>
               Mon profil <span>›</span>
             </button>
@@ -102,7 +95,7 @@ export default function UserDashboardClient({ login, role }: { login: string; ro
         <div className="userdash-topbar">
           <div className="userdash-title">
             <h1>Mon <span>Espace</span></h1>
-            <p>Tout est alimenté par la base (aucun chiffre statique).</p>
+            <p>Gérez vos billets et consultez vos achats.</p>
           </div>
         </div>
 
@@ -128,8 +121,6 @@ export default function UserDashboardClient({ login, role }: { login: string; ro
             <div className="userdash-grid">
               <div className="userdash-card">
                 <h3 style={{ fontSize: "1.1rem", margin: 0, color: "var(--text-dark)" }}>Dernières factures</h3>
-                <p style={{ marginTop: 6 }}>Issues de vos billets (DB)</p>
-
                 <div className="userdash-list" style={{ marginTop: 12 }}>
                   {(stats?.recentInvoices ?? []).length === 0 ? (
                     <div className="userdash-item">
@@ -160,14 +151,12 @@ export default function UserDashboardClient({ login, role }: { login: string; ro
 
               <div className="userdash-card">
                 <h3 style={{ fontSize: "1.1rem", margin: 0, color: "var(--text-dark)" }}>Prochains événements</h3>
-                <p style={{ marginTop: 6 }}>Basés sur les billets + dates d’épreuves</p>
-
                 <div className="userdash-list" style={{ marginTop: 12 }}>
                   {(stats?.upcomingTickets ?? []).length === 0 ? (
                     <div className="userdash-item">
                       <div>
                         <strong>Aucun événement à venir</strong>
-                        <div><small>Pas de billet futur enregistré.</small></div>
+                        <div><small>Vos prochains billets apparaîtront ici.</small></div>
                       </div>
                       <div className="userdash-pill">—</div>
                     </div>
@@ -195,9 +184,7 @@ export default function UserDashboardClient({ login, role }: { login: string; ro
 
         {tab === "billets" && (
           <div className="userdash-card">
-            <h3 style={{ fontSize: "1.1rem", margin: 0, color: "var(--text-dark)" }}>Mes billets / factures</h3>
-            <p style={{ marginTop: 6 }}>Liste complète (DB)</p>
-
+            <h3 style={{ fontSize: "1.1rem", margin: 0, color: "var(--text-dark)" }}>Mes billets</h3>
             <div className="userdash-list" style={{ marginTop: 12 }}>
               {myTickets.length === 0 ? (
                 <div className="userdash-item">
@@ -230,10 +217,6 @@ export default function UserDashboardClient({ login, role }: { login: string; ro
         {tab === "profil" && (
           <div className="userdash-card">
             <h3 style={{ fontSize: "1.1rem", margin: 0, color: "var(--text-dark)" }}>Mon profil</h3>
-            <p style={{ marginTop: 6 }}>
-              Ton modèle Merise n’a pas de nom/prénom utilisateur → on affiche le login.
-            </p>
-
             <div className="userdash-list" style={{ marginTop: 12 }}>
               <div className="userdash-item">
                 <div>
@@ -243,10 +226,6 @@ export default function UserDashboardClient({ login, role }: { login: string; ro
                 <div className="userdash-pill">{role}</div>
               </div>
             </div>
-
-            <p style={{ marginTop: 12, color: "var(--text-soft)" }}>
-              Prochaine étape : l’achat spectateur (depuis /epreuves/[id]) pour remplir ces billets automatiquement.
-            </p>
           </div>
         )}
       </main>

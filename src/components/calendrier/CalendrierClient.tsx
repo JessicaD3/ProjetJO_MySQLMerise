@@ -63,7 +63,7 @@ export default function CalendrierClient({ epreuves }: { epreuves: Epreuve[] }) 
         <h2 className="section-title">
           CALENDRIER <span>DES ÉPREUVES</span>
         </h2>
-        <p className="section-subtitle">Calendrier alimenté par la base (EPREUVE.date_heure)</p>
+        <p className="section-subtitle">Consultez la programmation jour par jour</p>
       </div>
 
       <div className="calendar-container">
@@ -99,7 +99,6 @@ export default function CalendrierClient({ epreuves }: { epreuves: Epreuve[] }) 
         </div>
       </div>
 
-      {/* Liste du jour */}
       {selectedDay !== null ? (
         <div style={{ marginTop: 30 }}>
           <div className="section-header" style={{ marginBottom: 20 }}>

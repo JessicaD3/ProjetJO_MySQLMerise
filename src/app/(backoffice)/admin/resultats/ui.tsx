@@ -136,7 +136,6 @@ export default function AdminResultatsClient() {
         </p>
       </div>
 
-      {/* Form */}
       <div className="medals-table" style={{ padding: 20, marginBottom: 20 }}>
         <form onSubmit={onSave} style={{ display: "grid", gridTemplateColumns: "1.6fr 220px 180px 160px", gap: 12 }}>
           <div className="form-group" style={{ marginBottom: 0 }}>
@@ -181,7 +180,6 @@ export default function AdminResultatsClient() {
         {err ? <p style={{ color: "crimson", marginTop: 10 }}>{err}</p> : null}
       </div>
 
-      {/* Liste */}
       <div className="medals-table">
         <div className="medals-header" style={{ gridTemplateColumns: "120px 1fr 120px 1fr 160px 120px" }}>
           <div>ID Athlète</div>

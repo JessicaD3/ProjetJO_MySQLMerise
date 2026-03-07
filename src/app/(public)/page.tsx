@@ -12,7 +12,8 @@ type Epreuve = {
 };
 
 async function getEpreuvesTop(): Promise<Epreuve[]> {
-  const res = await fetch("http://localhost:3000/api/epreuves", { cache: "no-store" });
+  const base = process.env.APP_URL || "http://localhost:3000";
+  const res = await fetch(`${base}/api/epreuves`, { cache: "no-store" });
   if (!res.ok) return [];
   const json = await res.json().catch(() => null);
   const all = (json?.data ?? []) as Epreuve[];
@@ -29,13 +30,13 @@ export default async function HomePage() {
       <div className="section">
         <div className="section-header">
           <h2 className="section-title">EN DIRECT <span>DES JEUX</span></h2>
-          <p className="section-subtitle">Prochaines épreuves (chargées depuis la base)</p>
+          <p className="section-subtitle">Les prochaines épreuves à suivre en un coup d’œil</p>
         </div>
 
         <div className="sports-grid">
           {top.length === 0 ? (
             <div style={{ color: "var(--text-soft)", textAlign: "center" }}>
-              Aucune donnée pour le moment. Ajoute des épreuves dans la base ou vérifie l’API.
+              Les épreuves seront bientôt affichées ici.
             </div>
           ) : (
             top.map((e) => (

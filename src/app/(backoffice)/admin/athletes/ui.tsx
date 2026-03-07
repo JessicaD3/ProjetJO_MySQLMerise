@@ -110,7 +110,6 @@ export default function AdminAthletesClient() {
         <p className="section-subtitle">CRUD backoffice (rattaché à Pays)</p>
       </div>
 
-      {/* Form création */}
       <div className="medals-table" style={{ padding: 20, marginBottom: 20 }}>
         <form onSubmit={onCreate} style={{ display: "grid", gridTemplateColumns: "1fr 1fr 140px 1fr 160px", gap: 12 }}>
           <div className="form-group" style={{ marginBottom: 0 }}>
@@ -151,7 +150,6 @@ export default function AdminAthletesClient() {
         {err ? <p style={{ color: "crimson", marginTop: 10 }}>{err}</p> : null}
       </div>
 
-      {/* Liste */}
       <div className="medals-table">
         <div className="medals-header" style={{ gridTemplateColumns: "120px 1fr 1fr 120px 1fr 160px" }}>
           <div>ID</div>
