@@ -54,7 +54,7 @@ export default function Hero() {
         </p>
 
         <div className="hero-buttons">
-          <Link className="btn btn-primary" href="/epreuves">
+          <Link className="btn btn-primary" href="/tickets">
             Réserver mes billets
           </Link>
           <Link className="btn btn-outline" href="/epreuves">
