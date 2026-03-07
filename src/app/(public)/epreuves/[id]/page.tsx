@@ -1,4 +1,5 @@
 export const dynamic = "force-dynamic";
+import BuyTicketForm from "@/components/tickets/BuyTicketForm";
 
 type EpreuveDetail = {
   id_epreuve: number;
@@ -55,6 +56,7 @@ export default async function EpreuveDetailPage({ params }: { params: { id: stri
         <p><strong>Billets vendus :</strong> {sold}</p>
         <p><strong>Capacité :</strong> {detail.capacite}</p>
         <p><strong>Billets restants :</strong> {remaining}</p>
+      <BuyTicketForm idEpreuve={detail.id_epreuve} defaultPrice={85}/>
       </div>
 
       <div className="section-header" style={{ marginBottom: 20 }}>
