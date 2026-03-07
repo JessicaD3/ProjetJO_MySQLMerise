@@ -14,15 +14,17 @@ type EpreuveRow = {
 };
 
 function formatDateFR(dt: string) {
-  // dt vient de MySQL -> "YYYY-MM-DD HH:MM:SS"
-  // on affiche court (comme maquette)
   const d = new Date(dt.replace(" ", "T"));
-  return isNaN(d.getTime())
+  return Number.isNaN(d.getTime())
     ? dt
     : d.toLocaleDateString("fr-FR", { day: "2-digit", month: "short" });
 }
 
-export default function EpreuvesClient({ initialEpreuves = [] }: { initialEpreuves?: EpreuveRow[] }) {
+export default function EpreuvesClient({
+  initialEpreuves = [],
+}: {
+  initialEpreuves?: EpreuveRow[];
+}) {
   const sports = useMemo(() => {
     const map = new Map<number, string>();
     initialEpreuves.forEach((e) => map.set(e.id_sport, e.nom_sport));
@@ -49,15 +51,19 @@ export default function EpreuvesClient({ initialEpreuves = [] }: { initialEpreuv
   return (
     <div className="section" style={{ paddingTop: 140 }}>
       <div className="section-header">
-        <h2 className="section-title">TOUTES LES <span>ÉPREUVES</span></h2>
+        <h2 className="section-title">
+          TOUTES LES <span>ÉPREUVES</span>
+        </h2>
         <p className="section-subtitle">
           Données chargées depuis la base (API /api/epreuves)
         </p>
       </div>
 
-      {/* Filtres (style maquette) */}
       <div className="filters">
-        <button className={`filter-btn ${sportFilter === "all" ? "active" : ""}`} onClick={() => setSportFilter("all")}>
+        <button
+          className={`filter-btn ${sportFilter === "all" ? "active" : ""}`}
+          onClick={() => setSportFilter("all")}
+        >
           Tous sports
         </button>
         {sports.map((s) => (
@@ -70,7 +76,10 @@ export default function EpreuvesClient({ initialEpreuves = [] }: { initialEpreuv
           </button>
         ))}
 
-        <button className={`filter-btn ${siteFilter === "all" ? "active" : ""}`} onClick={() => setSiteFilter("all")}>
+        <button
+          className={`filter-btn ${siteFilter === "all" ? "active" : ""}`}
+          onClick={() => setSiteFilter("all")}
+        >
           Tous sites
         </button>
         {sites.map((s) => (
@@ -84,27 +93,36 @@ export default function EpreuvesClient({ initialEpreuves = [] }: { initialEpreuv
         ))}
       </div>
 
-      {/* Cards (maquette) */}
       <div className="sports-grid">
-        {filtered.map((e) => (
-          <Link key={e.id_epreuve} href={`/epreuves/${e.id_epreuve}`} className="sport-card">
-            <div
-              className="sport-image"
-              style={{
-                backgroundImage:
-                  "url('https://images.unsplash.com/photo-1551698618-1dfe5d97d256?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')",
-              }}
-            />
-            <div className="sport-content">
-              <div className="sport-category">{e.nom_sport}</div>
-              <h3 className="sport-title">{e.nom_epreuve}</h3>
-              <div className="sport-details">
-                <span>📅 {formatDateFR(e.date_heure)}</span>
-                <span>🏟️ {e.nom_site}</span>
+        {filtered.length === 0 ? (
+          <div style={{ color: "var(--text-soft)", textAlign: "center" }}>
+            Aucune épreuve à afficher.
+          </div>
+        ) : (
+          filtered.map((e) => (
+            <Link
+              key={e.id_epreuve}
+              href={`/epreuves/${e.id_epreuve}`}
+              className="sport-card"
+            >
+              <div
+                className="sport-image"
+                style={{
+                  backgroundImage:
+                    "url('https://images.unsplash.com/photo-1551698618-1dfe5d97d256?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')",
+                }}
+              />
+              <div className="sport-content">
+                <div className="sport-category">{e.nom_sport}</div>
+                <h3 className="sport-title">{e.nom_epreuve}</h3>
+                <div className="sport-details">
+                  <span>📅 {formatDateFR(e.date_heure)}</span>
+                  <span>🏟️ {e.nom_site}</span>
+                </div>
               </div>
-            </div>
-          </Link>
-        ))}
+            </Link>
+          ))
+        )}
       </div>
     </div>
   );
