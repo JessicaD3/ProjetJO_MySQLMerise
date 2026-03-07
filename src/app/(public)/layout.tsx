@@ -6,7 +6,6 @@ export default function PublicLayout({ children }: { children: ReactNode }) {
   return (
     <>
       <Navbar />
-      {/* Navbar fixed => on décale le contenu */}
       <div style={{ paddingTop: 90 }}>
         <LiveTicker />
       </div>
