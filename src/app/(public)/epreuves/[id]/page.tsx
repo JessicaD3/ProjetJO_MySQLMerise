@@ -52,8 +52,25 @@ export default async function EpreuveDetailPage({ params }: PageProps) {
     );
   }
 
+  type Participant = {
+  id_athlete: number;
+  nom: string;
+  prenom: string;
+  sexe: string;
+  nom_pays: string;
+};
+
+async function getParticipants(id: string): Promise<Participant[]> {
+  const res = await fetch(`${baseUrl()}/api/epreuves/${id}/participants`, { cache: "no-store" });
+  if (!res.ok) return [];
+  const json = await res.json().catch(() => null);
+  return (json?.data ?? []) as Participant[];
+}
+
   const sold = await getBilletsCount(id);
   const remaining = Math.max(0, detail.capacite - sold);
+  
+  const participants = await getParticipants(id);
 
   return (
     <div className="section" style={{ paddingTop: 140 }}>
@@ -67,18 +84,71 @@ export default async function EpreuveDetailPage({ params }: PageProps) {
       </div>
 
       <div className="medals-table" style={{ padding: 20, marginBottom: 30 }}>
-        <p>
-          <strong>Billets vendus :</strong> {sold}
-        </p>
-        <p>
-          <strong>Capacité :</strong> {detail.capacite}
-        </p>
-        <p>
-          <strong>Billets restants :</strong> {remaining}
-        </p>
+  <div className="stats-grid" style={{ marginBottom: 0 }}>
+    <div className="stat-card">
+      <div className="stat-number">{sold}</div>
+      <div className="stat-label">Billets vendus</div>
+    </div>
+    <div className="stat-card">
+      <div className="stat-number">{detail.capacite}</div>
+      <div className="stat-label">Capacité</div>
+    </div>
+    <div className="stat-card">
+      <div className="stat-number">{remaining}</div>
+      <div className="stat-label">Billets restants</div>
+    </div>
+  </div>
 
-        <BuyTicketForm idEpreuve={detail.id_epreuve} defaultPrice={85} />
+  <div className="progress-bar" style={{ marginTop: 15 }}>
+    <div
+      className="progress-fill"
+      style={{ width: `${Math.min(100, Math.round((sold / Math.max(1, detail.capacite)) * 100))}%` }}
+    />
+  </div>
+
+  <div style={{ marginTop: 15 }}>
+    <BuyTicketForm idEpreuve={detail.id_epreuve} defaultPrice={85} />
+  </div>
+</div>
+
+            <div className="section-header" style={{ marginBottom: 20 }}>
+        <h2 className="section-title">
+          Participants <span>inscrits</span>
+        </h2>
+        <p className="section-subtitle">Liste récupérée depuis la base (participation → athlete → pays)</p>
+      </div>
+
+      <div className="medals-table">
+        <div className="medals-header" style={{ gridTemplateColumns: "120px 1fr 1fr 120px 1fr" }}>
+          <div>ID</div>
+          <div>Nom</div>
+          <div>Prénom</div>
+          <div>Sexe</div>
+          <div>Pays</div>
+        </div>
+
+        {participants.length === 0 ? (
+          <div className="medal-row" style={{ gridTemplateColumns: "1fr" }}>
+            <div style={{ textAlign: "center" }}>Aucun participant pour le moment.</div>
+          </div>
+        ) : (
+          participants.map((a) => (
+            <div
+              key={a.id_athlete}
+              className="medal-row"
+              style={{ gridTemplateColumns: "120px 1fr 1fr 120px 1fr" }}
+            >
+              <div>{a.id_athlete}</div>
+              <div>{a.nom}</div>
+              <div>{a.prenom}</div>
+              <div className="gold">{a.sexe}</div>
+              <div>{a.nom_pays}</div>
+            </div>
+          ))
+        )}
       </div>
     </div>
+
+    
   );
 }

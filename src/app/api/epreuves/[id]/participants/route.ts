@@ -12,24 +12,14 @@ async function parseId(ctx: Ctx) {
   return n;
 }
 
+// GET /api/epreuves/:id/participants (public)
 export const GET = handler<Ctx>(async (_req, ctx) => {
   const id_epreuve = await parseId(ctx);
 
-  // Vérifie que l'épreuve existe (sinon 404)
-  const [e] = await pool.query(
-    `SELECT 1 AS ok FROM epreuve WHERE id_epreuve = :id_epreuve LIMIT 1`,
-    { id_epreuve }
-  );
-  if ((e as any[]).length === 0) throw apiError("NOT_FOUND", 404, "Epreuve not found");
-
   const [rows] = await pool.query(
     `
-    SELECT
-      a.id_athlete,
-      a.nom,
-      a.prenom,
-      a.sexe,
-      p.id_pays,
+    SELECT 
+      a.id_athlete, a.nom, a.prenom, a.sexe,
       p.nom_pays
     FROM participation pa
     JOIN athlete a ON a.id_athlete = pa.id_athlete
