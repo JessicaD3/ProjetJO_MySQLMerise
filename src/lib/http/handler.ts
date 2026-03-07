@@ -16,6 +16,11 @@ export function handler<TCtx>(
         return jsonError(err.status, err.code, err.details);
       }
 
+
+      if (err?.code === "UNAUTHORIZED") return jsonError(401, "UNAUTHORIZED", "Login required");
+      if (err?.code === "FORBIDDEN") return jsonError(403, "FORBIDDEN", "Insufficient role");
+
+
       if (err?.message === "UNAUTHORIZED") return jsonError(401, "UNAUTHORIZED", "Login required");
       if (err?.message === "FORBIDDEN") return jsonError(403, "FORBIDDEN", "Insufficient role");
 

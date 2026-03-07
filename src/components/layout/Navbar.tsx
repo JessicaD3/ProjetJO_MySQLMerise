@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import AuthNav from "@/components/layout/AuthNav";
 
 function isActive(pathname: string, href: string) {
   if (href === "/") return pathname === "/";
@@ -39,9 +40,8 @@ export default function Navbar() {
           </Link>
 
           {/* Login (style bouton) */}
-          <Link className="btn-login" href="/login">
-            Connexion
-          </Link>
+          <AuthNav />
+
         </div>
       </div>
     </nav>
