@@ -2,17 +2,17 @@ import { handler } from "@/lib/http/handler";
 import { jsonOk, jsonCreated } from "@/lib/http/response";
 import { validateBody } from "@/lib/validation/validate";
 import { epreuveCreateSchema } from "@/lib/validation/schemas";
-import { requireAuth } from "@/lib/auth/session";
+import { getSessionUser, requireAuth } from "@/lib/auth/session";
 import { requireRole } from "@/lib/auth/rbac";
 import * as service from "@/services/epreuves.service";
 
+// ✅ Public: lecture
 export const GET = handler(async () => {
-  const user = await requireAuth();
-  requireRole(user, ["ADMIN", "ORGANISATEUR"]);
-
+  // pas d'auth requise
   return jsonOk(await service.list());
 });
 
+// 🔒 Protégé: création
 export const POST = handler(async (req) => {
   const user = await requireAuth();
   requireRole(user, ["ADMIN", "ORGANISATEUR"]);
