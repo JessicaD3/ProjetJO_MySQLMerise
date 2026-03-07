@@ -8,13 +8,22 @@ export type DbEpreuve = {
   id_site: number;
 };
 
-export async function listEpreuves(): Promise<DbEpreuve[]> {
+export async function listEpreuves(): Promise<any[]> {
   const [rows] = await pool.query(`
-    SELECT id_epreuve, nom_epreuve, date_heure, id_sport, id_site
-    FROM epreuve
-    ORDER BY date_heure ASC
+    SELECT
+      e.id_epreuve,
+      e.nom_epreuve,
+      e.date_heure,
+      e.id_sport,
+      sp.nom_sport,
+      e.id_site,
+      si.nom_site
+    FROM epreuve e
+    JOIN sport sp ON sp.id_sport = e.id_sport
+    JOIN site si ON si.id_site = e.id_site
+    ORDER BY e.date_heure ASC
   `);
-  return rows as DbEpreuve[];
+  return rows as any[];
 }
 
 export async function getEpreuveById(id_epreuve: number): Promise<DbEpreuve | null> {

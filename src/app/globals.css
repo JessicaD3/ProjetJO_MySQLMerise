@@ -1,0 +1,1468 @@
+ @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --snow-white: #ffffff;
+            --snow-light: #f8f9ff;
+            --ice-blue: #e6f0fa;
+            --ice-dark: #c1d9f0;
+            --silver: #e0e7ff;
+            --light-gray: #f0f4f8;
+            --text-dark: #1a2b3c;
+            --text-soft: #2c3e50;
+            --gold: #d4af37;
+            --gold-light: #f5e7c8;
+            --shadow-soft: 0 10px 30px rgba(0,0,0,0.05);
+            --shadow-medium: 0 15px 40px rgba(0,0,0,0.1);
+            --gradient-snow: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%);
+            --gradient-ice: linear-gradient(145deg, #ffffff, #e6f0fa);
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--snow-white);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        /* Scrollbar personnalisée */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--ice-blue);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--ice-dark);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--gold);
+        }
+
+        /* Loader */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--snow-white);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease;
+        }
+
+        .loader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader-content {
+            text-align: center;
+        }
+
+        .loader-ring {
+            width: 80px;
+            height: 80px;
+            border: 5px solid var(--ice-blue);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        .snowflake {
+            color: var(--ice-dark);
+            font-size: 2rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 50px;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.95), rgba(255,255,255,0.8));
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(193, 217, 240, 0.3);
+        }
+
+        .navbar.scrolled {
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(10px);
+            padding: 15px 50px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            text-decoration: none;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .logo::after {
+            content: '2026';
+            position: absolute;
+            top: -10px;
+            right: -30px;
+            font-size: 0.8rem;
+            background: var(--gold);
+            color: var(--snow-white);
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .logo span {
+            color: var(--ice-dark);
+            font-weight: 300;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gold);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--gold);
+        }
+
+        .nav-links .btn-login {
+            background: var(--gold);
+            color: var(--snow-white);
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: 600;
+        }
+
+        .nav-links .btn-login::after {
+            display: none;
+        }
+
+        .nav-links .btn-login:hover {
+            background: var(--text-dark);
+            color: var(--snow-white);
+            transform: translateY(-2px);
+        }
+
+        /* Boutons */
+        .btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--gold);
+            color: var(--snow-white);
+        }
+
+        .btn-primary:hover {
+            background: var(--text-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--snow-white);
+            border: 2px solid var(--snow-white);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .btn-outline:hover {
+            background: var(--snow-white);
+            color: var(--text-dark);
+            transform: translateY(-3px);
+            border-color: var(--snow-white);
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        .slide::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 100%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .hero-date {
+            font-size: 1.2rem;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 20px;
+            animation: fadeInDown 1s ease;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            position: relative;
+            z-index: 11;
+        }
+
+        .hero-title {
+            font-size: 6rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            animation: fadeInUp 1s ease;
+            color: var(--snow-white);
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+            position: relative;
+            z-index: 11;
+        }
+
+        .hero-title span {
+            display: block;
+            font-size: 2rem;
+            font-weight: 300;
+            letter-spacing: 12px;
+            color: var(--gold);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin-bottom: 40px;
+            animation: fadeInUp 1s ease 0.3s both;
+            color: var(--snow-white);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            font-weight: 500;
+            background: rgba(0,0,0,0.2);
+            padding: 10px 20px;
+            border-radius: 50px;
+            backdrop-filter: blur(5px);
+            position: relative;
+            z-index: 11;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            animation: fadeInUp 1s ease 0.6s both;
+            position: relative;
+            z-index: 11;
+        }
+
+        /* Anneaux Olympiques - Animation originale */
+        .olympic-rings {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 140px;
+            z-index: 5;
+            opacity: 0.3;
+            animation: ringsFloat 6s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .ring {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border: 4px solid;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: ringRotate 10s linear infinite;
+        }
+
+        .ring::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            animation: ringPulse 2s ease-in-out infinite;
+        }
+
+        .ring-1 {
+            top: 0;
+            left: 20px;
+            border-color: #0081C8;
+            animation-delay: 0s;
+        }
+
+        .ring-2 {
+            top: 0;
+            left: 90px;
+            border-color: #000000;
+            animation-delay: 0.2s;
+        }
+
+        .ring-3 {
+            top: 0;
+            left: 160px;
+            border-color: #EE334E;
+            animation-delay: 0.4s;
+        }
+
+        .ring-4 {
+            top: 30px;
+            left: 55px;
+            border-color: #FCB131;
+            animation-delay: 0.6s;
+        }
+
+        .ring-5 {
+            top: 30px;
+            left: 125px;
+            border-color: #00A651;
+            animation-delay: 0.8s;
+        }
+
+        @keyframes ringRotate {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.1); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        @keyframes ringsFloat {
+            0%, 100% { transform: translate(-50%, -50%) translateY(0); }
+            50% { transform: translate(-50%, -50%) translateY(-20px); }
+        }
+
+        @keyframes ringPulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.2); }
+        }
+
+        .slider-controls {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 12;
+        }
+
+        .slider-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid var(--gold);
+        }
+
+        .slider-dot.active {
+            background: var(--gold);
+            transform: scale(1.3);
+        }
+
+        /* Live Bar */
+        .live-bar {
+            background: var(--gradient-ice);
+            padding: 10px 50px;
+            position: relative;
+            z-index: 100;
+            overflow: hidden;
+            border-bottom: 1px solid var(--ice-dark);
+        }
+
+        .live-ticker {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            animation: ticker 30s linear infinite;
+            white-space: nowrap;
+        }
+
+        .live-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #ff4444;
+            border-radius: 50%;
+            animation: pulse 1s ease infinite;
+        }
+
+        @keyframes ticker {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Sections */
+        .section {
+            padding: 100px 50px;
+            max-width: 1400px;
+            margin: 0 auto;
+            background: var(--snow-white);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+        }
+
+        .section-title span {
+            color: var(--gold);
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title span::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 3px;
+            background: var(--gold);
+        }
+
+        .section-subtitle {
+            color: var(--text-soft);
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 25px;
+            background: var(--snow-white);
+            border: 1px solid var(--ice-dark);
+            border-radius: 25px;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--gold);
+            color: var(--snow-white);
+            border-color: var(--gold);
+            transform: translateY(-2px);
+        }
+
+        /* Sports Grid */
+        .sports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .sport-card {
+            background: var(--snow-white);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+            border: 1px solid var(--ice-dark);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .sport-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-medium);
+            border-color: var(--gold);
+        }
+
+        .sport-card.live::before {
+            content: 'LIVE';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: #ff4444;
+            color: var(--snow-white);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            z-index: 2;
+            animation: pulse 1s ease infinite;
+        }
+
+        .sport-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            transition: transform 0.5s ease;
+        }
+
+        .sport-card:hover .sport-image {
+            transform: scale(1.1);
+        }
+
+        .sport-image::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(to top, var(--snow-white), transparent);
+        }
+
+        .sport-content {
+            padding: 25px;
+            position: relative;
+        }
+
+        .sport-category {
+            color: var(--gold);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .sport-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+        }
+
+        .sport-details {
+            display: flex;
+            gap: 20px;
+            color: var(--text-soft);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: var(--ice-blue);
+            border-radius: 2px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gold);
+            transition: width 0.3s ease;
+        }
+
+        .score-board {
+            background: var(--ice-blue);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .score {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        .score-live {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: var(--text-dark);
+        }
+
+        .medals {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--ice-blue);
+        }
+
+        .medal {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .medal-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .medal.gold .medal-icon {
+            background: var(--gold);
+            color: var(--snow-white);
+        }
+
+        .medal.silver .medal-icon {
+            background: var(--silver);
+            color: var(--text-dark);
+        }
+
+        .medal.bronze .medal-icon {
+            background: #cd7f32;
+            color: var(--snow-white);
+        }
+
+        /* Athlètes */
+        .athletes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .athlete-card {
+            background: var(--snow-white);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            text-align: center;
+            border: 1px solid var(--ice-dark);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .athlete-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+            border-color: var(--gold);
+        }
+
+        .athlete-image {
+            height: 280px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .athlete-flag {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-size: cover;
+            border: 2px solid var(--gold);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .athlete-info {
+            padding: 25px;
+        }
+
+        .athlete-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--text-dark);
+        }
+
+        .athlete-country {
+            color: var(--gold);
+            margin-bottom: 15px;
+        }
+
+        .athlete-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            color: var(--text-soft);
+        }
+
+        .athlete-bio {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--ice-blue);
+            font-size: 0.9rem;
+            color: var(--text-soft);
+        }
+
+        /* Actualités */
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .news-card {
+            background: var(--snow-white);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid var(--ice-dark);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .news-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+            border-color: var(--gold);
+        }
+
+        .news-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .news-tag {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: var(--gold);
+            color: var(--snow-white);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .news-time {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.9);
+            color: var(--text-dark);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .news-content {
+            padding: 25px;
+        }
+
+        .news-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+
+        .news-excerpt {
+            color: var(--text-soft);
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .news-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-soft);
+            font-size: 0.9rem;
+        }
+
+        .news-stats {
+            display: flex;
+            gap: 15px;
+        }
+
+        /* Calendrier */
+        .calendar-container {
+            background: var(--snow-white);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid var(--ice-dark);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 10px;
+        }
+
+        .calendar-nav button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--ice-blue);
+            border: none;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .calendar-nav button:hover {
+            background: var(--gold);
+            color: var(--snow-white);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            background: var(--snow-white);
+            border: 1px solid var(--ice-blue);
+            border-radius: 10px;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            color: var(--text-dark);
+        }
+
+        .calendar-day:hover {
+            background: var(--ice-blue);
+            border-color: var(--gold);
+        }
+
+        .calendar-day.has-event {
+            background: var(--gold-light);
+            border: 1px solid var(--gold);
+        }
+
+        .event-indicator {
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--gold);
+        }
+
+        /* Médailles */
+        .medals-table {
+            background: var(--snow-white);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--ice-dark);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .medals-header {
+            display: grid;
+            grid-template-columns: 80px 1fr 100px 100px 100px 100px;
+            padding: 20px;
+            background: var(--ice-blue);
+            font-weight: 600;
+            color: var(--gold);
+        }
+
+        .medal-row {
+            display: grid;
+            grid-template-columns: 80px 1fr 100px 100px 100px 100px;
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--ice-blue);
+            transition: all 0.3s ease;
+            color: var(--text-dark);
+        }
+
+        .medal-row:hover {
+            background: var(--ice-blue);
+        }
+
+        .medal-row .gold { color: var(--gold); font-weight: 700; }
+        .medal-row .silver { color: #808080; font-weight: 700; }
+        .medal-row .bronze { color: #cd7f32; font-weight: 700; }
+
+        .country-flag {
+            width: 30px;
+            height: 20px;
+            background-size: cover;
+            display: inline-block;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        /* Tickets */
+        .tickets-section {
+            background: var(--gradient-ice);
+            border-radius: 30px;
+            padding: 60px;
+            margin-top: 50px;
+        }
+
+        .tickets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .ticket-card {
+            background: var(--snow-white);
+            border: 1px solid var(--ice-dark);
+            border-radius: 20px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .ticket-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+            border-color: var(--gold);
+        }
+
+        .ticket-card.popular::before {
+            content: 'POPULAIRE';
+            position: absolute;
+            top: 20px;
+            right: -30px;
+            background: var(--gold);
+            color: var(--snow-white);
+            padding: 5px 40px;
+            transform: rotate(45deg);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .ticket-category {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--gold);
+            margin-bottom: 15px;
+        }
+
+        .ticket-event {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+        }
+
+        .ticket-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--gold);
+        }
+
+        .ticket-price small {
+            font-size: 1rem;
+            font-weight: 300;
+            color: var(--text-soft);
+        }
+
+        .ticket-features {
+            list-style: none;
+            margin-bottom: 30px;
+            color: var(--text-soft);
+        }
+
+        .ticket-features li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-ticket {
+            width: 100%;
+            padding: 15px;
+            background: var(--gold);
+            color: var(--snow-white);
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-ticket:hover {
+            background: var(--text-dark);
+        }
+
+        /* Auth Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--snow-white);
+            padding: 40px;
+            border-radius: 30px;
+            width: 90%;
+            max-width: 450px;
+            position: relative;
+            border: 1px solid var(--ice-dark);
+            box-shadow: var(--shadow-medium);
+            animation: modalIn 0.5s ease;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-soft);
+            transition: color 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: var(--gold);
+        }
+
+        .modal h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+
+        .modal p {
+            color: var(--text-soft);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 15px;
+            background: var(--snow-white);
+            border: 1px solid var(--ice-dark);
+            border-radius: 10px;
+            color: var(--text-dark);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--gold);
+            background: var(--ice-blue);
+        }
+
+        .btn-modal {
+            width: 100%;
+            padding: 15px;
+            background: var(--gold);
+            color: var(--snow-white);
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+        .btn-modal:hover {
+            background: var(--text-dark);
+            transform: translateY(-2px);
+        }
+
+        .modal-footer {
+            text-align: center;
+            color: var(--text-soft);
+        }
+
+        .modal-footer a {
+            color: var(--gold);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: none;
+            padding: 100px 50px 50px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .dashboard.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .welcome-card {
+            background: var(--snow-white);
+            border-radius: 30px;
+            padding: 40px;
+            margin-bottom: 40px;
+            border: 1px solid var(--ice-dark);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .welcome-title {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+
+        .welcome-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            background: var(--gold);
+            color: var(--snow-white);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--snow-white);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid var(--ice-dark);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: var(--text-soft);
+        }
+
+        /* Invoices */
+        .invoices-grid {
+            display: grid;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .invoice-card {
+            background: var(--snow-white);
+            border-radius: 15px;
+            padding: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--ice-dark);
+            transition: all 0.3s ease;
+        }
+
+        .invoice-card:hover {
+            border-color: var(--gold);
+            transform: translateX(5px);
+        }
+
+        .invoice-info h4 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            color: var(--text-dark);
+        }
+
+        .invoice-info p {
+            color: var(--text-soft);
+        }
+
+        .invoice-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        /* Admin Panel */
+        .admin-panel {
+            background: var(--snow-white);
+            border-radius: 30px;
+            padding: 40px;
+            margin-bottom: 40px;
+            border: 1px solid var(--ice-dark);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .admin-panel h3 {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            color: var(--gold);
+        }
+
+        .admin-form {
+            display: grid;
+            gap: 20px;
+            max-width: 600px;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .hero-title {
+                font-size: 4rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .olympic-rings {
+                transform: translate(-50%, -50%) scale(0.7);
+            }
+            
+            .medals-header,
+            .medal-row {
+                grid-template-columns: 60px 1fr 60px 60px 60px 60px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 3rem;
+            }
+            
+            .hero-title span {
+                font-size: 1.5rem;
+            }
+            
+            .olympic-rings {
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+            
+            .section {
+                padding: 60px 20px;
+            }
+            
+            .tickets-section {
+                padding: 30px;
+            }
+            
+            .calendar-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .medals-header,
+            .medal-row {
+                grid-template-columns: 1fr;
+                gap: 10px;
+                text-align: center;
+            }
+        }
