@@ -38,6 +38,9 @@ export default function Navbar() {
             <Link className={isActive(pathname, "/athletes") ? "active" : ""} href="/athletes">
             Athlètes
           </Link>
+                    <Link className={isActive(pathname, "/calendrier") ? "active" : ""} href="/calendrier">
+            Calendrier
+          </Link>
           <Link className={isActive(pathname, "/classement/medailles") ? "active" : ""} href="/classement/medailles">
             Médailles
           </Link>
