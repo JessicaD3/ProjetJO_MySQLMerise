@@ -32,7 +32,7 @@ export default function Navbar() {
           <Link className={isActive(pathname, "/") ? "active" : ""} href="/">
             Accueil
           </Link>
-          <Link className={isActive(pathname, "/epreuves") ? "active" : ""} href="/epreuves">
+          <Link className={isActive(pathname, "/sports") ? "active" : ""} href="/sports">
             Sports
           </Link>
           <Link className={isActive(pathname, "/athletes") ? "active" : ""} href="/athletes">

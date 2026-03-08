@@ -1,66 +1,53 @@
 import Hero from "@/components/home/Hero";
-import Link from "next/link";
+import HomeUpcomingEvents from "@/components/home/HomeUpcomingEvents";
 
 export const dynamic = "force-dynamic";
 
 type Epreuve = {
   id_epreuve: number;
   nom_epreuve: string;
-  date_heure: string;
+  date_heure: string | Date;
   nom_sport?: string;
   nom_site?: string;
 };
 
-async function getEpreuvesTop(): Promise<Epreuve[]> {
+async function fetchJson<T>(path: string): Promise<T> {
   const base = process.env.APP_URL || "http://localhost:3000";
-  const res = await fetch(`${base}/api/epreuves`, { cache: "no-store" });
-  if (!res.ok) return [];
+  const res = await fetch(new URL(path, base), { cache: "no-store" });
+  if (!res.ok) return [] as T;
   const json = await res.json().catch(() => null);
-  const all = (json?.data ?? []) as Epreuve[];
-  return all.slice(0, 3);
+  return (json?.data ?? []) as T;
+}
+
+function parseDate(dt: string | Date) {
+  const d =
+    dt instanceof Date
+      ? dt
+      : new Date(dt.includes("T") ? dt : dt.replace(" ", "T"));
+
+  if (Number.isNaN(d.getTime())) return null;
+  return d;
 }
 
 export default async function HomePage() {
-  const top = await getEpreuvesTop();
+  const epreuves = await fetchJson<Epreuve[]>("/api/epreuves");
+
+  const upcoming = [...epreuves]
+    .filter((e) => {
+      const d = parseDate(e.date_heure);
+      return d && d.getTime() > Date.now();
+    })
+    .sort((a, b) => {
+      const da = parseDate(a.date_heure)?.getTime() ?? 0;
+      const db = parseDate(b.date_heure)?.getTime() ?? 0;
+      return da - db;
+    })
+    .slice(0, 4);
 
   return (
     <>
       <Hero />
-
-      <div className="section">
-        <div className="section-header">
-          <h2 className="section-title">EN DIRECT <span>DES JEUX</span></h2>
-          <p className="section-subtitle">Les prochaines épreuves à suivre en un coup d’œil</p>
-        </div>
-
-        <div className="sports-grid">
-          {top.length === 0 ? (
-            <div style={{ color: "var(--text-soft)", textAlign: "center" }}>
-              Les épreuves seront bientôt affichées ici.
-            </div>
-          ) : (
-            top.map((e) => (
-              <Link key={e.id_epreuve} href={`/epreuves/${e.id_epreuve}`} className="sport-card">
-                <div
-                  className="sport-image"
-                  style={{
-                    backgroundImage:
-                      "url('https://images.unsplash.com/photo-1551698618-1dfe5d97d256?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')",
-                  }}
-                />
-                <div className="sport-content">
-                  <div className="sport-category">{e.nom_sport ?? "Épreuve"}</div>
-                  <h3 className="sport-title">{e.nom_epreuve}</h3>
-                  <div className="sport-details">
-                    <span>📅 {e.date_heure}</span>
-                    <span>🏟️ {e.nom_site ?? "-"}</span>
-                  </div>
-                </div>
-              </Link>
-            ))
-          )}
-        </div>
-      </div>
+      <HomeUpcomingEvents epreuves={upcoming} />
     </>
   );
 }
