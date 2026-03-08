@@ -1,8 +1,19 @@
 import { handler } from "@/lib/http/handler";
-import { jsonOk } from "@/lib/http/response";
+import { jsonCreated, jsonOk } from "@/lib/http/response";
 import pool from "@/lib/db/pool";
+import { requireAuth } from "@/lib/auth/session";
+import { requireRole } from "@/lib/auth/rbac";
+import { validateBody } from "@/lib/validation/validate";
+import { z } from "zod";
+import * as service from "@/services/athletes.service";
 
-// Public: liste des athlètes avec leur pays
+const athleteCreateSchema = z.object({
+  nom: z.string().min(1).max(100),
+  prenom: z.string().min(1).max(100),
+  sexe: z.enum(["M", "F"]),
+  id_pays: z.number().int().positive(),
+});
+
 export const GET = handler(async () => {
   const [rows] = await pool.query(
     `
@@ -16,4 +27,14 @@ export const GET = handler(async () => {
   );
 
   return jsonOk(rows);
+});
+
+export const POST = handler(async (req) => {
+  const user = await requireAuth();
+  requireRole(user, ["ADMIN", "ORGANISATEUR"]);
+
+  const body = await validateBody(req, athleteCreateSchema);
+  const created = await service.create(body);
+
+  return jsonCreated(created);
 });
