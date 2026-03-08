@@ -21,14 +21,21 @@ function parseDate(dt?: string | Date | null) {
   return d;
 }
 
-function formatDateFr(dt?: string | null) {
-  const d = parseDate(dt);
-  if (!d) return "Date à confirmer";
-  return d.toLocaleDateString("fr-FR", {
+function formatDateFr(value?: string | Date | null) {
+  if (!value) return "Non programmée";
+
+  const d =
+    value instanceof Date
+      ? value
+      : new Date(value.includes("T") ? value : value.replace(" ", "T"));
+
+  if (Number.isNaN(d.getTime())) return "Non programmée";
+
+  return new Intl.DateTimeFormat("fr-FR", {
     day: "2-digit",
     month: "long",
     year: "numeric",
-  });
+  }).format(d);
 }
 
 function getSportEmoji(name: string) {
