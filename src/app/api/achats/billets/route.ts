@@ -11,27 +11,22 @@ const achatBilletSchema = z.object({
   id_epreuve: z.number().int().positive(),
   nom: z.string().min(1).max(100),
   prenom: z.string().min(1).max(100),
-  num_place: z.string().min(1).max(50),
-  prix_achat: z.number().nonnegative(),
 });
 
 export const POST = handler(async (req) => {
   const user = await requireAuth();
-  // LECTEUR = spectateur (tu peux garder ADMIN aussi pour test)
   requireRole(user, ["LECTEUR", "ADMIN"]);
 
   const body = await validateBody(req, achatBilletSchema);
   const id_utilisateur = user.id_utilisateur;
 
-  // Contrôle capacité : billets vendus <= capacité site de l'épreuve
   const conn = await pool.getConnection();
   try {
     await conn.beginTransaction();
 
-    // 1) capacité de l’épreuve
     const [capRows] = await conn.query(
       `
-      SELECT si.capacite AS capacite
+      SELECT si.id_site, si.capacite AS capacite
       FROM epreuve e
       JOIN site si ON si.id_site = e.id_site
       WHERE e.id_epreuve = :id_epreuve
@@ -39,11 +34,13 @@ export const POST = handler(async (req) => {
       `,
       { id_epreuve: body.id_epreuve }
     );
+
     const capArr = capRows as any[];
     if (!capArr.length) throw apiError("NOT_FOUND", 404, "Epreuve not found");
+
+    const id_site = Number(capArr[0].id_site);
     const capacite = Number(capArr[0].capacite);
 
-    // 2) count billets
     const [countRows] = await conn.query(
       `SELECT COUNT(*) AS sold FROM billet WHERE id_epreuve = :id_epreuve`,
       { id_epreuve: body.id_epreuve }
@@ -52,7 +49,9 @@ export const POST = handler(async (req) => {
 
     if (sold >= capacite) throw apiError("CAPACITY_REACHED", 409, "No tickets left for this epreuve");
 
-    // 3) insert billet
+    const prix_achat = Number(process.env.TICKET_DEFAULT_PRICE ?? 85);
+    const num_place = `S${id_site}-E${body.id_epreuve}-${sold + 1}`;
+
     const [ins] = await conn.query(
       `
       INSERT INTO billet (id_epreuve, id_utilisateur, nom, prenom, date_achat, num_place, prix_achat)
@@ -63,15 +62,15 @@ export const POST = handler(async (req) => {
         id_utilisateur,
         nom: body.nom,
         prenom: body.prenom,
-        num_place: body.num_place,
-        prix_achat: body.prix_achat,
+        num_place,
+        prix_achat,
       }
     );
 
     const id_billet = (ins as any).insertId;
-    await conn.commit();
 
-    return jsonCreated({ id_billet });
+    await conn.commit();
+    return jsonCreated({ id_billet, num_place, prix_achat });
   } catch (e) {
     await conn.rollback();
     throw e;

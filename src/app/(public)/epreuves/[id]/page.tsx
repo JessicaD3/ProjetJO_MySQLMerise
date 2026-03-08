@@ -1,6 +1,6 @@
-import BuyTicketForm from "@/components/tickets/BuyTicketForm";
-
 export const dynamic = "force-dynamic";
+
+import BuyTicketForm from "@/components/tickets/BuyTicketForm";
 
 type EpreuveDetail = {
   id_epreuve: number;
@@ -13,35 +13,85 @@ type EpreuveDetail = {
   capacite: number;
 };
 
-function baseUrl() {
-  return process.env.APP_URL || "http://localhost:3000";
-}
+type Participant = {
+  id_athlete: number;
+  nom: string;
+  prenom: string;
+  sexe: string;
+  id_pays: number;
+  nom_pays: string;
+};
+
+type TicketStat = {
+  id_epreuve: number;
+  nom_epreuve: string;
+  date_heure: string;
+  nom_sport: string;
+  nom_site: string;
+  capacite: number;
+  sold: number;
+  remaining: number;
+};
 
 async function getDetail(id: string): Promise<EpreuveDetail | null> {
-  const res = await fetch(`${baseUrl()}/api/epreuves/${id}`, { cache: "no-store" });
+  const res = await fetch(`http://localhost:3000/api/epreuves/${id}`, {
+    cache: "no-store",
+  });
   if (!res.ok) return null;
   const json = await res.json().catch(() => null);
   return (json?.data ?? null) as EpreuveDetail | null;
 }
 
-async function getBilletsCount(id: string): Promise<number> {
-  const res = await fetch(`${baseUrl()}/api/epreuves/${id}/billets/count`, { cache: "no-store" });
-  if (!res.ok) return 0;
+async function getTicketStatsForEpreuve(id: string): Promise<TicketStat | null> {
+  const res = await fetch(`http://localhost:3000/api/epreuves/billets/stats`, {
+    cache: "no-store",
+  });
+  if (!res.ok) return null;
+
   const json = await res.json().catch(() => null);
-  return Number(json?.data?.count ?? 0);
+  const rows = (json?.data ?? []) as TicketStat[];
+  return rows.find((r) => Number(r.id_epreuve) === Number(id)) ?? null;
 }
 
-type PageProps = {
-  params: Promise<{ id: string }>;
-};
+async function getParticipants(id: string): Promise<Participant[]> {
+  const res = await fetch(`http://localhost:3000/api/epreuves/${id}/participants`, {
+    cache: "no-store",
+  });
+  if (!res.ok) return [];
+  const json = await res.json().catch(() => null);
+  return (json?.data ?? []) as Participant[];
+}
 
-export default async function EpreuveDetailPage({ params }: PageProps) {
-  const { id } = await params; // ✅ IMPORTANT (Next 16.1.6)
-  const detail = await getDetail(id);
+function formatDateFr(dateStr: string) {
+  const d = new Date(dateStr);
+  if (Number.isNaN(d.getTime())) return dateStr;
+
+  return new Intl.DateTimeFormat("fr-FR", {
+    weekday: "long",
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(d);
+}
+
+export default async function EpreuveDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+
+  const [detail, stats, participants] = await Promise.all([
+    getDetail(id),
+    getTicketStatsForEpreuve(id),
+    getParticipants(id),
+  ]);
 
   if (!detail) {
     return (
-      <div className="section" style={{ paddingTop: 140 }}>
+      <div className="section" style={{ paddingTop: 120 }}>
         <div className="section-header">
           <h2 className="section-title">
             ÉPREUVE <span>INTROUVABLE</span>
@@ -52,103 +102,130 @@ export default async function EpreuveDetailPage({ params }: PageProps) {
     );
   }
 
-  type Participant = {
-  id_athlete: number;
-  nom: string;
-  prenom: string;
-  sexe: string;
-  nom_pays: string;
-};
-
-async function getParticipants(id: string): Promise<Participant[]> {
-  const res = await fetch(`${baseUrl()}/api/epreuves/${id}/participants`, { cache: "no-store" });
-  if (!res.ok) return [];
-  const json = await res.json().catch(() => null);
-  return (json?.data ?? []) as Participant[];
-}
-
-  const sold = await getBilletsCount(id);
-  const remaining = Math.max(0, detail.capacite - sold);
-  
-  const participants = await getParticipants(id);
+  const remaining = Math.max(0, Number(stats?.remaining ?? detail.capacite));
+  const isSoldOut = remaining <= 0;
+  const eventDate = formatDateFr(detail.date_heure);
 
   return (
-    <div className="section" style={{ paddingTop: 140 }}>
-      <div className="section-header">
-        <h2 className="section-title">
-          {detail.nom_epreuve} <span>{detail.nom_sport}</span>
-        </h2>
-        <p className="section-subtitle">
-          🏟️ {detail.nom_site} • 📅 {detail.date_heure}
-        </p>
-      </div>
+    <section className="official-ticket-shell">
+      <div className="official-ticket-card">
+        <div className="official-ticket-grid">
+          <div className="official-ticket-main">
+            <div className="official-event-header">
+              <span className="official-event-badge">{detail.nom_sport}</span>
 
-      <div className="medals-table" style={{ padding: 20, marginBottom: 30 }}>
-  <div className="stats-grid" style={{ marginBottom: 0 }}>
-    <div className="stat-card">
-      <div className="stat-number">{sold}</div>
-      <div className="stat-label">Billets vendus</div>
-    </div>
-    <div className="stat-card">
-      <div className="stat-number">{detail.capacite}</div>
-      <div className="stat-label">Capacité</div>
-    </div>
-    <div className="stat-card">
-      <div className="stat-number">{remaining}</div>
-      <div className="stat-label">Billets restants</div>
-    </div>
-  </div>
+              <h1 className="official-event-title">
+                {detail.nom_epreuve}
+                <span>{detail.nom_site}</span>
+              </h1>
 
-  <div className="progress-bar" style={{ marginTop: 15 }}>
-    <div
-      className="progress-fill"
-      style={{ width: `${Math.min(100, Math.round((sold / Math.max(1, detail.capacite)) * 100))}%` }}
-    />
-  </div>
+              <div className="official-event-meta">
+                <div className="official-event-meta-item">
+                  <strong>📅</strong>
+                  <span>{eventDate}</span>
+                </div>
+                <div className="official-event-meta-item">
+                  <strong>🏟️</strong>
+                  <span>{detail.nom_site}</span>
+                </div>
+                <div className="official-event-meta-item">
+                  <strong>🎟️</strong>
+                  <span>{isSoldOut ? "Événement complet" : "Billetterie officielle"}</span>
+                </div>
+              </div>
+            </div>
 
-  <div style={{ marginTop: 15 }}>
-    <BuyTicketForm idEpreuve={detail.id_epreuve} defaultPrice={85} />
+            <div className="official-ticket-stats">
+              <div className="official-stat-block">
+                <div className="official-stat-number">{remaining}</div>
+                <div className="official-stat-label">Places disponibles</div>
+              </div>
+
+              <div className="official-stat-block">
+                <div className="official-stat-number">{participants.length}</div>
+                <div className="official-stat-label">Athlètes inscrits</div>
+              </div>
+
+              <div className="official-stat-block">
+                <div className="official-stat-number">85 €</div>
+                <div className="official-stat-label">Tarif officiel</div>
+              </div>
+            </div>
+
+            <BuyTicketForm
+              idEpreuve={detail.id_epreuve}
+              defaultPrice={85}
+              eventName={detail.nom_epreuve}
+              sportName={detail.nom_sport}
+              venueName={detail.nom_site}
+              remaining={remaining}
+              soldOut={isSoldOut}
+            />
+
+            <div className="official-info-note">
+              <span>ℹ️</span>
+              <p>
+                Les places sont attribuées automatiquement
+                lors de l’achat.
+              </p>
+            </div>
+          </div>
+
+          <aside className="official-ticket-side">
+            <div className="official-side-top">
+              <p className="official-side-kicker">Liste officielle</p>
+              <h2 className="official-side-title">Participants inscrits</h2>
+              <p className="official-side-subtitle">
+                Athlètes actuellement rattachés à cette épreuve.
+              </p>
+            </div>
+
+            <div className="official-participants-list">
+              {participants.length === 0 ? (
+                <div className="official-empty-state">
+                  Aucun participant enregistré pour le moment.
+                </div>
+              ) : (
+                participants.map((p, index) => (
+                  <div key={p.id_athlete} className="official-participant-row">
+                    <div className="official-participant-rank">
+                      {String(index + 1).padStart(2, "0")}
+                    </div>
+
+                    <div className="official-participant-body">
+                      <div className="official-participant-name">
+                        {p.prenom} {p.nom}
+                      </div>
+                      <div className="official-participant-meta">
+                        {p.nom_pays} • {p.sexe}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            <div className="official-side-footer">
+              <div className="official-side-footer-card">
+                <strong>Billetterie sécurisée</strong>
+                <span>
+                  Achat rattaché à votre compte utilisateur et à l’épreuve sélectionnée.
+                </span>
+              </div>
+
+              <div className="official-fun-weather">
+  <div className="official-fun-weather-badge">Météo station</div>
+  <div className="official-fun-weather-main">
+    <span className="official-fun-weather-temp">-6°C</span>
+    <span className="official-fun-weather-text">
+      Neige légère · Vent faible
+    </span>
   </div>
 </div>
-
-            <div className="section-header" style={{ marginBottom: 20 }}>
-        <h2 className="section-title">
-          Participants <span>inscrits</span>
-        </h2>
-        <p className="section-subtitle">Liste récupérée depuis la base (participation → athlete → pays)</p>
-      </div>
-
-      <div className="medals-table">
-        <div className="medals-header" style={{ gridTemplateColumns: "120px 1fr 1fr 120px 1fr" }}>
-          <div>ID</div>
-          <div>Nom</div>
-          <div>Prénom</div>
-          <div>Sexe</div>
-          <div>Pays</div>
-        </div>
-
-        {participants.length === 0 ? (
-          <div className="medal-row" style={{ gridTemplateColumns: "1fr" }}>
-            <div style={{ textAlign: "center" }}>Aucun participant pour le moment.</div>
-          </div>
-        ) : (
-          participants.map((a) => (
-            <div
-              key={a.id_athlete}
-              className="medal-row"
-              style={{ gridTemplateColumns: "120px 1fr 1fr 120px 1fr" }}
-            >
-              <div>{a.id_athlete}</div>
-              <div>{a.nom}</div>
-              <div>{a.prenom}</div>
-              <div className="gold">{a.sexe}</div>
-              <div>{a.nom_pays}</div>
             </div>
-          ))
-        )}
+          </aside>
+        </div>
       </div>
-    </div>
-
-    
+    </section>
   );
 }

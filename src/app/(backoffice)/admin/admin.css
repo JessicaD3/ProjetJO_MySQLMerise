@@ -167,3 +167,40 @@
 .quick-action-card i { font-size: 2rem; color: var(--gold); margin-bottom: 15px; }
 .quick-action-card h4 { margin-bottom: 5px; }
 .quick-action-card p { color: var(--text-soft); font-size: 0.8rem; }
+
+.admin-back-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 13px 16px;
+    border-radius: 18px;
+    background: #ffffff;
+    border: 1px solid #d8e6f2;
+    color: #213b57;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+.admin-back-link:hover {
+    background: #f4f9fe;
+    border-color: #c8ddef;
+    color: #18324b;
+}
+
+.admin-back-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    background: #eef5fb;
+    color: #d2a72f;
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1;
+    flex-shrink: 0;
+}

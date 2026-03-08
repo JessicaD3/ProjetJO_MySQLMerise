@@ -12,7 +12,6 @@ async function parseId(ctx: Ctx) {
   return n;
 }
 
-// GET /api/epreuves/:id/participants (public)
 export const GET = handler<Ctx>(async (_req, ctx) => {
   const id_epreuve = await parseId(ctx);
 

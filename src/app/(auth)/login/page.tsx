@@ -105,6 +105,9 @@ export default function LoginPage() {
               Créer un compte
             </a>
           </p>
+          <a className="nav-return-link" href="/">
+  ← Retour
+</a>
         </form>
       </div>
     </div>

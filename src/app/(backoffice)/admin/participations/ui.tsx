@@ -128,7 +128,6 @@ export default function AdminParticipationsClient() {
         <p className="section-subtitle">Athlète ↔ Épreuve (création / suppression)</p>
       </div>
 
-      {/* Form création */}
       <div className="medals-table" style={{ padding: 20, marginBottom: 20 }}>
         <form onSubmit={onCreate} style={{ display: "grid", gridTemplateColumns: "1fr 1fr 220px 160px", gap: 12 }}>
           <div className="form-group" style={{ marginBottom: 0 }}>
@@ -172,7 +171,6 @@ export default function AdminParticipationsClient() {
         {err ? <p style={{ color: "crimson", marginTop: 10 }}>{err}</p> : null}
       </div>
 
-      {/* Liste */}
       <div className="medals-table">
         <div className="medals-header" style={{ gridTemplateColumns: "120px 1fr 120px 1fr 220px 160px" }}>
           <div>ID Athlète</div>

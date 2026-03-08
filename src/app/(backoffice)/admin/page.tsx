@@ -1,35 +1,27 @@
 import { getSessionUser } from "@/lib/auth/session";
 import { redirect } from "next/navigation";
-import { headers } from "next/headers";
+import pool from "@/lib/db/pool";
 
 export const dynamic = "force-dynamic";
 
-async function count(path: string) {
-  const base =
-    process.env.APP_URL ||
-    headers().get("origin") ||
-    "http://localhost:3000";
+async function countTable(tableName: "sport" | "athlete" | "epreuve" | "billet") {
+  const [rows] = await pool.query(
+    `SELECT COUNT(*) AS total FROM ${tableName}`
+  );
 
-  const url = new URL(path, base);
-
-  const res = await fetch(url, { cache: "no-store" });
-  if (!res.ok) return 0;
-
-  const json = await res.json().catch(() => null);
-  return Array.isArray(json?.data) ? json.data.length : 0;
+  return Number((rows as any[])[0]?.total ?? 0);
 }
 
 export default async function AdminDashboardPage() {
   const me = await getSessionUser();
   if (!me) redirect("/login");
 
-  // Stats DB-driven (pas statiques)
-const [sports, athletes, epreuves, billets] = await Promise.all([
-  count("/api/sports"),
-  count("/api/athletes"),
-  count("/api/epreuves"),
-  count("/api/billets"),
-]);
+  const [sports, athletes, epreuves, billets] = await Promise.all([
+    countTable("sport"),
+    countTable("athlete"),
+    countTable("epreuve"),
+    countTable("billet"),
+  ]);
 
   return (
     <>

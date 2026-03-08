@@ -73,7 +73,7 @@ export default function AdminSitesClient() {
         <h2 className="section-title">
           Gestion <span>Sites</span>
         </h2>
-        <p className="section-subtitle">CRUD backoffice (RBAC côté API)</p>
+        <p className="section-subtitle">Lieux de compétition et capacités d’accueil</p>
       </div>
 
       <div className="medals-table" style={{ padding: 20, marginBottom: 20 }}>

@@ -15,7 +15,7 @@ type Epreuve = {
 async function fetchJson<T>(path: string): Promise<T> {
   const base = process.env.APP_URL || "http://localhost:3000";
   const res = await fetch(new URL(path, base), { cache: "no-store" });
-  if (!res.ok) return [] as any;
+  if (!res.ok) return [] as T;
   const json = await res.json().catch(() => null);
   return (json?.data ?? []) as T;
 }

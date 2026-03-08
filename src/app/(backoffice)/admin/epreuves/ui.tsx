@@ -146,7 +146,6 @@ export default function AdminEpreuvesClient() {
         <p className="section-subtitle">CRUD backoffice (sport + site + date/heure)</p>
       </div>
 
-      {/* Form création */}
       <div className="medals-table" style={{ padding: 20, marginBottom: 20 }}>
         <form onSubmit={onCreate} style={{ display: "grid", gridTemplateColumns: "1.2fr 220px 1fr 1fr 160px", gap: 12 }}>
           <div className="form-group" style={{ marginBottom: 0 }}>
@@ -187,7 +186,6 @@ export default function AdminEpreuvesClient() {
         {err ? <p style={{ color: "crimson", marginTop: 10 }}>{err}</p> : null}
       </div>
 
-      {/* Liste */}
       <div className="medals-table">
         <div className="medals-header" style={{ gridTemplateColumns: "90px 1fr 200px 1fr 1fr 160px" }}>
           <div>ID</div>

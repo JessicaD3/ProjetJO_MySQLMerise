@@ -22,7 +22,6 @@ export default function Hero() {
 
   return (
     <section className="hero">
-      {/* Rings */}
       <div className="olympic-rings">
         <div className="ring ring-1" />
         <div className="ring ring-2" />
@@ -31,7 +30,6 @@ export default function Hero() {
         <div className="ring ring-5" />
       </div>
 
-      {/* Slider */}
       <div className="hero-slider">
         {slides.map((url, idx) => (
           <div
@@ -42,7 +40,6 @@ export default function Hero() {
         ))}
       </div>
 
-      {/* Content */}
       <div className="hero-content">
         <div className="hero-date">6 - 22 FÉVRIER 2026</div>
         <h1 className="hero-title">
@@ -57,13 +54,12 @@ export default function Hero() {
           <Link className="btn btn-primary" href="/tickets">
             Réserver mes billets
           </Link>
-          <Link className="btn btn-outline" href="/epreuves">
+          <Link className="btn btn-outline" href="/sports">
             Découvrir les sports
           </Link>
         </div>
       </div>
 
-      {/* Dots */}
       <div className="slider-controls">
         {slides.map((_, idx) => (
           <div
