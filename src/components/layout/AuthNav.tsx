@@ -51,7 +51,7 @@ export default function AuthNav() {
           Mon compte
         </Link>
       )}
-
+      
       <button
         className="btn-login"
         style={{ background: "transparent", border: "2px solid var(--gold)", color: "var(--gold)" }}

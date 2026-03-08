@@ -88,6 +88,10 @@ export default function UserDashboardClient({ login, role }: { login: string; ro
           </li>
         </ul>
 
+<a className="user-dashboard-back-link" href="/">
+  <span className="user-dashboard-back-arrow">←</span>
+  <span>Retour au site</span>
+</a>
         <button className="userdash-logout" onClick={logout}>Déconnexion</button>
       </aside>
 

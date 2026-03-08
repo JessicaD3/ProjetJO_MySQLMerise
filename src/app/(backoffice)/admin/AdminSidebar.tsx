@@ -48,7 +48,12 @@ export default function AdminSidebar({ login, role }: { login: string; role: str
         <Item href="/admin/billetterie" icon="fas fa-ticket-alt" label="Billetterie" />
       </ul>
 
+
       <div className="sidebar-footer">
+        <a className="admin-back-link" href="/">
+  <span className="admin-back-icon">↩</span>
+  <span>Retour au site</span>
+</a>
         <div className="logout-btn">
           <i className="fas fa-sign-out-alt"></i> <span><LogoutButton /></span>
         </div>
