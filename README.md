@@ -21,7 +21,7 @@ Décompresser le fichier `.zip` dans un dossier local.
 ---
 
 ## Étape 2 — Configurer les variables d'environnements 
-Créer un fichier: .env.local
+Créer un fichier: .env
 
 Avec le contenu suivant:
 ```bash
