@@ -6,7 +6,8 @@ export type ApiErrorCode =
   | "CONFLICT"
   | "BAD_REQUEST"
   | "CONFIG_ERROR"
-  | "INTERNAL_ERROR";
+  | "INTERNAL_ERROR"
+  | "CAPACITY_REACHED";
 
 export type ApiError = {
   code: ApiErrorCode;

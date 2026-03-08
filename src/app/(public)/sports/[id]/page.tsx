@@ -25,22 +25,28 @@ function parseDate(dt: string | Date) {
   return d;
 }
 
-function formatDateTimeFr(dt: string) {
-  const d = parseDate(dt);
-  if (!d) return dt;
-  return d.toLocaleDateString("fr-FR", {
-    weekday: "long",
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+function formatDateTimeFr(value: string | Date) {
+  const d =
+    value instanceof Date
+      ? value
+      : new Date(value.includes("T") ? value : value.replace(" ", "T"));
+
+  if (Number.isNaN(d.getTime())) return String(value);
+
+  return new Intl.DateTimeFormat("fr-FR", {
+    dateStyle: "long",
+    timeStyle: "short",
+  }).format(d);
 }
 
-function isPast(dt: string) {
-  const d = parseDate(dt);
-  if (!d) return false;
+function isPast(value: string | Date) {
+  const d =
+    value instanceof Date
+      ? value
+      : new Date(value.includes("T") ? value : value.replace(" ", "T"));
+
+  if (Number.isNaN(d.getTime())) return false;
+
   return d.getTime() < Date.now();
 }
 
