@@ -1,6 +1,7 @@
 import { apiError } from "@/lib/http/errors";
 import * as athletesRepo from "@/repositories/athletes.repo";
 import * as paysRepo from "@/repositories/pays.repo";
+import pool from "@/lib/db/pool";
 
 async function assertPaysExists(id_pays: number) {
   const p = await paysRepo.getPaysById(id_pays);
@@ -17,7 +18,12 @@ export async function get(id_athlete: number) {
   return a;
 }
 
-export async function create(params: { nom: string; prenom: string; sexe: string; id_pays: number }) {
+export async function create(params: {
+  nom: string;
+  prenom: string;
+  sexe: string;
+  id_pays: number;
+}) {
   await assertPaysExists(params.id_pays);
   const id = await athletesRepo.insertAthlete(params);
   return get(id);
@@ -34,7 +40,45 @@ export async function update(
 }
 
 export async function remove(id_athlete: number) {
-  const ok = await athletesRepo.deleteAthlete(id_athlete);
-  if (!ok) throw apiError("NOT_FOUND", 404, "Athlete not found");
-  return { ok: true };
+  const existing = await athletesRepo.getAthleteById(id_athlete);
+  if (!existing) throw apiError("NOT_FOUND", 404, "Athlete not found");
+
+  const conn = await pool.getConnection();
+
+  try {
+    await conn.beginTransaction();
+
+    // 1. Supprimer les résultats liés aux participations de l’athlète
+    await conn.query(
+      `
+      DELETE r
+      FROM resultat r
+      INNER JOIN participation p
+        ON p.id_athlete = r.id_athlete
+       AND p.id_epreuve = r.id_epreuve
+      WHERE p.id_athlete = :id_athlete
+      `,
+      { id_athlete }
+    );
+
+    // 2. Supprimer les participations de l’athlète
+    await conn.query(
+      `DELETE FROM participation WHERE id_athlete = :id_athlete`,
+      { id_athlete }
+    );
+
+    // 3. Supprimer l’athlète
+    await conn.query(
+      `DELETE FROM athlete WHERE id_athlete = :id_athlete`,
+      { id_athlete }
+    );
+
+    await conn.commit();
+    return { ok: true };
+  } catch (e) {
+    await conn.rollback();
+    throw e;
+  } finally {
+    conn.release();
+  }
 }

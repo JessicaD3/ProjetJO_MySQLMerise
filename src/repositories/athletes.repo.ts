@@ -54,10 +54,12 @@ export async function updateAthlete(params: {
   return ((res as any).affectedRows as number) > 0;
 }
 
-export async function deleteAthlete(id_athlete: number): Promise<boolean> {
-  const [res] = await pool.query(
-    `DELETE FROM athlete WHERE id_athlete = :id_athlete`,
+export async function deleteParticipationsByAthlete(
+  conn: any,
+  id_athlete: number
+): Promise<void> {
+  await conn.query(
+    `DELETE FROM participation WHERE id_athlete = :id_athlete`,
     { id_athlete }
   );
-  return ((res as any).affectedRows as number) > 0;
 }
